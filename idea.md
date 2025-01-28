@@ -1,0 +1,1 @@
+This project aims to create a script that is capable of identifying a product, given its UPC-A bar code image.
