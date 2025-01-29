@@ -1,0 +1,11 @@
+
+Calling funcion listlist2list
+Calling funcion listlist2list
+Calling funcion listlist2list
+Calling funcion colorlist2binarylist
+Calling funcion listlist2list
+Calling funcion colorlist2binarylist
+Calling funcion listlist2list
+Calling funcion colorlist2binarylist
+Calling funcion listlist2list
+Calling funcion colorlist2binarylist
