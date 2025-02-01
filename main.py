@@ -1,3 +1,4 @@
+# Author: Davi Carvalho de Souza
 # numpy
 import numpy as np
 
@@ -8,7 +9,7 @@ import matplotlib.pylab as plt
 import webbrowser
 
 # logger file
-import log
+from log import Log
 
 # image processor file
 import processor
@@ -40,6 +41,7 @@ import reader
 ################################
 
 # main function
+@Log.log
 def main(imagepath : str) -> None:
     # 1.
     img = plt.imread(imagepath)     # 1.1.
@@ -57,24 +59,54 @@ def main(imagepath : str) -> None:
     code : list[int] = reader.resizeBinaryList(centerRow)
 
     # 7.
-    codeSides : list[list[int]] = reader.breakCodeIntoSides(code)
+    codeSides : list[list[list[int]]] = reader.breakCodeIntoSides(code)
 
     # checking the validity of the code sides
-    if len(codeSides[0]) % 7 != 0 or len(codeSides[1]) % 7 != 0:
-        print("There was an error while attempting to read the code.")
+    if len(codeSides[0]) % 6 != 0 or len(codeSides[1]) % 6 != 0:
+        print("There was an error while attempting to read the code")
         return
 
-    # the codes are valid from here on
-    print(len(codeSides[0]) % 7)
-    print(len(codeSides[1]) % 7)
+    # 8. and 9. 
+    # The codes are valid from here on
+    encodedNumbers : list[str] = reader.fixSides(codeSides)
+
+    # 10.
+    # decoding the numbers
+    decodedNumbers : list[int] = reader.decode(encodedNumbers)
+
+    # 11.
+    # checking the amount of unknown digits
+    if reader.countUnknowns(decodedNumbers) >= 2:
+        print("Too many digits couldn't be read")
+        return 
+
+    # checking the validity of the code
+    if not(reader.isCodeValid(decodedNumbers)):
+        print("The code is unvalid")
+        return
+
+    # 12.
+    # fixing missing digits
+    if not(reader.isCodeComplete(decodedNumbers)):
+        decodedNumbers = reader.fixUnknown(decodedNumbers)
+
+    # The code is valid from now on
+    numberString : str = reader.numberString(decodedNumbers)
+    
+    # 13.
+    # opening product page on the browser
+    webbrowser.open(f"https://www.barcodelookup.com/{numberString}")
 
 # checking main
 if __name__ == "__main__":
     images = [
-        "076950450479.jpg",
-        "705632441947.jpg",
-        "binaryex.jpg",
-        "binaryex2.jpg"
+        "076950450479.jpg",     # does not work (gray noise)
+        "705632441947.jpg",     # does not work (gray noise)
+        "binaryex.jpg",         # works
+        "binaryex2.jpg",        # works
+        "binaryexRev.jpg",      # works         (upside down)
+        "broken1.jpg",          # works         (one damaged pixel)
+        "tooBroken.jpg"         # does not work (too damaged)
     ]
 
-    main(f"images/{images[0]}")
+    main(f"images/{images[5]}")
