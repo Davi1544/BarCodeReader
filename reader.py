@@ -103,15 +103,19 @@ def fixSides(sides : list[list[list[int]]]) -> list[str]:
     # checking for upside down readings
     for encodedNumber in sides[0]: 
         # if the encodedNumber does not have an even amount of 1s, than the code was read upside-down
-        if sum(encodedNumber) % 2 != 0:     
-            isCorrect = False
+        if sum(encodedNumber) % 2 != 0:
+            if code2number("".join(str(n) for n in encodedNumber)) in encondings:
+                isCorrect = False
+                break
 
     # joining sides and converting numbers into strings
     joinedSides = []
+    
     # joining left
     for encodedNumber in sides[0]:
         number : str = "".join([str(i) for i in encodedNumber])
         joinedSides.append(number)
+
     # joining right
     for encodedNumber in sides[1]:
         number : str = "".join([str(i) for i in encodedNumber])
